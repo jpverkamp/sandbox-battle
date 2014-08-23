@@ -1,33 +1,46 @@
 var tiles = new Tiles();
 var controls = new Controls();
 
+var frames = 0;
 var MS_PER_GAME = 60 * 1000;
 var startTime = new Date().getTime();
 var running = true;
 
 $(function() {
-  controls.run();
+  controls.init();
 });
 
 function tick() {
+  frames += 1;
+
   var soFar = new Date().getTime() - startTime;
   var remainingSec = Math.floor((MS_PER_GAME - soFar) / 1000);
 
   if (remainingSec > 0) {
-    $('#tiles #countdown').text(remainingSec + ' sec remaining');
+    $('#countdown').text(remainingSec + ' sec remaining');
+    $('#debug').text(
+      frames + ' frames in ' +
+      soFar + ' seconds, ' +
+      (frames / Math.floor(soFar / 1000)) + ' fps'
+    );
+
+    tiles.tick();
+    controls.tick();
+
   } else {
     stop();
   }
 
   if (running) {
-    setTimeout(tick, 1000/30);
+    setTimeout(tick, 1000/60);
   }
 }
 
 function run() {
-  tiles.run();
-  controls.run();
+  tiles.init();
+  controls.init();
 
+  frames = 0;
   startTime = new Date().getTime();
   running = true;
   tick();
@@ -41,7 +54,7 @@ function stop() {
 
   startTime = new Date().getTime() - MS_PER_GAME;
   running = false;
-  $('#tiles #countdown').text('game over');
+  $('#countdown').text('game over');
 
   return false;
 }

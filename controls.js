@@ -1,8 +1,8 @@
 function Controls() {
   var keys = {};
   var running = false;
-  var PER_TICK_ACCELERATION = 0.1;
-  var PER_TICK_FRICTION = 0.01;
+  var PER_TICK_ACCELERATION = 0.05;
+  var PER_TICK_FRICTION = 0.001;
   var VELOCITY_CAP = 10;
 
   var vel = {};
@@ -54,7 +54,7 @@ function Controls() {
     }
   };
 
-  var tick = function(event) {
+  this.tick = function() {
     $.each(keys, function(i, el) {
       var player = el[0];
       var command = el[1];
@@ -63,6 +63,10 @@ function Controls() {
       $game = $('#tiles');
       $tile = $('#tiles *[data-player="' + player + '"]');
 
+      // Don't move players that don't exist
+      if (!(player in vel)) return;
+
+      // Update velocity
       if (active) {
         if (command == 'up') {
           vel[player][1] -= PER_TICK_ACCELERATION;
@@ -89,7 +93,7 @@ function Controls() {
         vel[player][1] += (vel[player][1] > 0 ? -PER_TICK_FRICTION : PER_TICK_FRICTION);
       }
 
-      // Cap velcity so we don't go too fast
+      // Cap velocity so we don't go too fast
       vel[player][0] = Math.min(VELOCITY_CAP, Math.max(-VELOCITY_CAP, vel[player][0]));
       vel[player][1] = Math.min(VELOCITY_CAP, Math.max(-VELOCITY_CAP, vel[player][1]));
 
@@ -100,18 +104,18 @@ function Controls() {
       // Bounce off the edges of the screen
       if (left < 0) {
         left = 0;
-        vel[player][0] = Math.abs(vel[player][0]);
+        vel[player][0] = Math.abs(vel[player][0]) / 2;
       } else if (left > $game.width() - $tile.width()) {
         left = $game.width() - $tile.width();
-        vel[player][0] = -1 * Math.abs(vel[player][0]);
+        vel[player][0] = -1 * Math.abs(vel[player][0]) / 2;
       }
 
       if (top < 0) {
         top = 0;
-        vel[player][1] = Math.abs(vel[player][1]);
+        vel[player][1] = Math.abs(vel[player][1]) / 2;
       } else if (top > $game.height() - $tile.height()) {
         top =  $game.height() - $tile.height();
-        vel[player][1] = -1 * Math.abs(vel[player][1]);
+        vel[player][1] = -1 * Math.abs(vel[player][1]) / 2;
       }
 
       // Finally, update the position
@@ -123,13 +127,10 @@ function Controls() {
     }
   };
 
-  this.run = function() {
-    // Reload keybindings in case they've changed
-    loadKeyBindings();
-
+  this.init = function() {
     // Initialize velocities to zero
     $game = $('#tiles');
-    $('#tiles canvas').each(function(i, eli) {
+    $('#tiles *[data-player]').each(function(i, eli) {
       vel[i] = [0, 0];
       $(eli).css({
         top: Math.random() * ($game.height() - $(eli).height()),
@@ -137,12 +138,14 @@ function Controls() {
       });
     });
 
+    // Reload keybindings in case they've changed
+    loadKeyBindings();
+
     // Add keybindings, we can use the same function since it can check type
     $(document).unbind('keydown').bind('keydown', onkey);
     $(document).unbind('keyup').bind('keyup', onkey);
 
     running = true;
-    tick();
   }
 
   this.stop = function() {
