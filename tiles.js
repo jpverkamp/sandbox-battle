@@ -1,5 +1,4 @@
 function Tiles() {
-  var maxFrames = 10000;
   var running = false;
   var allData = {};
   var ordering = [];
@@ -94,10 +93,8 @@ function Tiles() {
       var i = 0, r = 0, g = 0, b = 0, a = 0;
 
       allData[frameIndex] = data;
-
       var imageData = frame_ctx.createImageData(width, height);
 
-      var count = 0;
       var tick = function() {
           // Debug: For add a pixel
           data[width / 2][height - 1] = frameIndex + 1;
@@ -174,15 +171,7 @@ function Tiles() {
           frame_ctx.putImageData(imageData, 0, 0);
 
           if (running) {
-              count += 1;
               setTimeout(tick, 1000/60);
-          } else {
-              end = new Date().getTime();
-              console.log(
-                  maxFrames + ' frames in ' +
-                  (end - start) + ' ms = ' +
-                  (maxFrames / ((end - start) / 1000)) + ' fps'
-              );
           }
       }
       tick();
