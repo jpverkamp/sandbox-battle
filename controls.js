@@ -28,7 +28,22 @@ function Controls() {
   };
 
   var onkey = function(event) {
-    var key = String.fromCharCode(event.keyCode);
+    switch (event.keyCode) {
+      case  37: key = 'LEFT'; break;
+      case  38: key = 'UP'; break;
+      case  39: key = 'RIGHT'; break;
+      case  40: key = 'DOWN'; break;
+      case  97: key = 'NUM1'; break;
+      case  98: key = 'NUM2'; break;
+      case  99: key = 'NUM3'; break;
+      case 100: key = 'NUM4'; break;
+      case 101: key = 'NUM5'; break;
+      case 102: key = 'NUM6'; break;
+      case 103: key = 'NUM7'; break;
+      case 104: key = 'NUM8'; break;
+      case 105: key = 'NUM9'; break;
+      default: key = String.fromCharCode(event.keyCode).toUpperCase();
+    }
 
     if (key in keys) {
       if (event.type == 'keydown') {

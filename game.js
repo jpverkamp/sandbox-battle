@@ -39,6 +39,7 @@ function stop() {
   tiles.stop();
   controls.stop();
 
+  startTime = new Date().getTime() - MS_PER_GAME;
   running = false;
   $('#tiles #countdown').text('game over');
 

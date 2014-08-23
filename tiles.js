@@ -123,6 +123,11 @@ function Tiles() {
               // We only want this once, so give priority to whichever frame is 'lower' on the screen
               if (frameBounds.top < otherBounds.top) return;
 
+              // Bail out if we haven't loaded the data yet
+              if (!(frameIndex in allData && otherIndex in allData)) {
+                return;
+              }
+
               // TODO: Find the actual offset rather than looping over an entire image
               var otherX, otherY, temp;
               for (var frameY = 0; frameY < height; frameY++) {
@@ -151,13 +156,17 @@ function Tiles() {
                   a = 255;
 
                   if (data[x][y] == 0) {
-                      a = 0;
+                    a = 0;
                   } else if (data[x][y] == 1) {
-                      b = 255;
+                    b = 255;
                   } else if (data[x][y] == 2) {
-                      r = 255;
+                    r = 255;
                   } else if (data[x][y] == 3) {
-                      g = 255;
+                    g = 255;
+                  } else if (data[x][y] == 4) {
+                    r = 246;
+                    g = 96;
+                    b = 171;
                   }
 
                   imageData.data[i * 4 + 0] = r;
