@@ -10,13 +10,13 @@ $(function() {
   controls.init();
 });
 
-function tick() {
+function tilesTick() {
   frames += 1;
 
   var soFar = new Date().getTime() - startTime;
   var remainingSec = Math.floor((MS_PER_GAME - soFar) / 1000);
 
-  if (remainingSec > 0) {
+  if (running && remainingSec > 0) {
     $('#countdown').text(remainingSec + ' sec remaining');
     $('#debug').text(
       frames + ' frames in ' +
@@ -27,12 +27,17 @@ function tick() {
     tiles.tick();
     controls.tick();
 
+    setTimeout(tilesTick, 1000/60);
   } else {
     stop();
   }
+}
+
+function controlTick() {
+  controls.tick();
 
   if (running) {
-    setTimeout(tick, 1000/60);
+    setTimeout(controlTick, 1000/30);
   }
 }
 
@@ -43,7 +48,9 @@ function run() {
   frames = 0;
   startTime = new Date().getTime();
   running = true;
-  tick();
+
+  tilesTick();
+  // controlTick();
 
   return false;
 }
