@@ -1,0 +1,131 @@
+function Controls() {
+  var keys = {};
+  var running = false;
+  var PER_TICK_ACCELERATION = 0.1;
+  var PER_TICK_FRICTION = 0.01;
+  var VELOCITY_CAP = 10;
+
+  var vel = {};
+
+  // Load key bindings
+  var loadKeyBindings = function() {
+    keys = {};
+
+    console.log('Loading key bindings...');
+
+    $('#controls table').each(function(i, eli) {
+      var player = parseInt($(eli).attr('data-player'));
+
+      console.log('loading controls for player ' + player);
+
+      $(eli).find('input').each(function(j, elj) {
+        var command = $(elj).attr('name');
+        var key = $(elj).val();
+
+        keys[key] = [player, command, false];
+      });
+    });
+  };
+
+  var onkey = function(event) {
+    var key = String.fromCharCode(event.keyCode);
+
+    if (key in keys) {
+      if (event.type == 'keydown') {
+        keys[key][2] = true;
+      } else if (event.type == 'keyup') {
+        keys[key][2] = false;
+      }
+    }
+  };
+
+  var tick = function(event) {
+    $.each(keys, function(i, el) {
+      var player = el[0];
+      var command = el[1];
+      var active = el[2];
+
+      $tile = $('#tiles *[data-player="' + player + '"]');
+
+      if (active) {
+        if (command == 'up') {
+          vel[player][1] -= PER_TICK_ACCELERATION;
+        } else if (command == 'down') {
+          vel[player][1] += PER_TICK_ACCELERATION;
+        } else if (command == 'left') {
+          vel[player][0] -= PER_TICK_ACCELERATION;
+        } else if (command == 'right') {
+          vel[player][0] += PER_TICK_ACCELERATION;
+        }
+      }
+
+      // Use friction to slow each box down over time
+      vel[player][0] += (vel[player][0] > 0 ? -PER_TICK_FRICTION : PER_TICK_FRICTION);
+      vel[player][1] += (vel[player][1] > 0 ? -PER_TICK_FRICTION : PER_TICK_FRICTION);
+
+      // If we're close enough to zero that friction will accelerate us, stop
+      if (Math.abs(vel[player][0]) < 2 * PER_TICK_FRICTION) vel[player][0] = 0;
+      if (Math.abs(vel[player][1]) < 2 * PER_TICK_FRICTION) vel[player][1] = 0;
+
+      // Cap velcity so we don't go too fast
+      vel[player][0] = Math.min(VELOCITY_CAP, Math.max(-VELOCITY_CAP, vel[player][0]));
+      vel[player][1] = Math.min(VELOCITY_CAP, Math.max(-VELOCITY_CAP, vel[player][1]));
+
+      // Update the current position based on velocity
+      var left = $('canvas').offset().left + vel[player][0];
+      var top = $('canvas').offset().top + vel[player][1];
+
+      // Bounce off the edges of the screen
+      if (left < 0) {
+        left = 0;
+        vel[player][0] = Math.abs(vel[player][0]);
+      } else if (left > $(document).width() - $tile.width()) {
+        left = $(document).width() - $tile.width();
+        vel[player][0] = -1 * Math.abs(vel[player][0]);
+      }
+
+      if (top < 0) {
+        top = 0;
+        vel[player][1] = Math.abs(vel[player][1]);
+      } else if (top > $(document).height() - $tile.height()) {
+        top = $(document).height() - $tile.height();
+        vel[player][1] = -1 * Math.abs(vel[player][1]);
+      }
+
+      // Finally, update the position
+      $tile.css({'top': top, 'left': left});
+    });
+
+    if (running) {
+      setTimeout(tick, 1000/30);
+    }
+  };
+
+  this.run = function() {
+    // Reload keybindings in case they've changed
+    loadKeyBindings();
+
+    // Initialize velocities to zero
+    $('#tiles canvas').each(function(i, eli) {
+      vel[i] = [0, 0];
+      $(eli).css({
+        top: Math.random() * (jQuery(document).height() - $(eli).height()),
+        left: Math.random() * (jQuery(document).width() - $(eli).width())
+      });
+    });
+
+    // Add keybindings
+    $(document).unbind('keydown').bind('keydown', onkey);
+    $(document).unbind('keyup').bind('keyup', onkey);
+
+    running = true;
+    tick();
+  }
+
+  this.stop = function() {
+    running = false;
+
+    $(document).unbind('keydown');
+    $(document).unbind('keyup');
+  }
+};
