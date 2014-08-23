@@ -45,6 +45,7 @@ function Controls() {
       var command = el[1];
       var active = el[2];
 
+      $game = $('#tiles');
       $tile = $('#tiles *[data-player="' + player + '"]');
 
       if (active) {
@@ -60,35 +61,41 @@ function Controls() {
       }
 
       // Use friction to slow each box down over time
-      vel[player][0] += (vel[player][0] > 0 ? -PER_TICK_FRICTION : PER_TICK_FRICTION);
-      vel[player][1] += (vel[player][1] > 0 ? -PER_TICK_FRICTION : PER_TICK_FRICTION);
+      // If we're close enough to zero that friction will accelerate us, just stop
+      if (Math.abs(vel[player][0]) < PER_TICK_FRICTION) {
+        vel[player][0] = 0;
+      } else {
+        vel[player][0] += (vel[player][0] > 0 ? -PER_TICK_FRICTION : PER_TICK_FRICTION);
+      }
 
-      // If we're close enough to zero that friction will accelerate us, stop
-      if (Math.abs(vel[player][0]) < 2 * PER_TICK_FRICTION) vel[player][0] = 0;
-      if (Math.abs(vel[player][1]) < 2 * PER_TICK_FRICTION) vel[player][1] = 0;
+      if (Math.abs(vel[player][1]) < PER_TICK_FRICTION) {
+        vel[player][1] = 0;
+      } else {
+        vel[player][1] += (vel[player][1] > 0 ? -PER_TICK_FRICTION : PER_TICK_FRICTION);
+      }
 
       // Cap velcity so we don't go too fast
       vel[player][0] = Math.min(VELOCITY_CAP, Math.max(-VELOCITY_CAP, vel[player][0]));
       vel[player][1] = Math.min(VELOCITY_CAP, Math.max(-VELOCITY_CAP, vel[player][1]));
 
       // Update the current position based on velocity
-      var left = $('canvas').offset().left + vel[player][0];
-      var top = $('canvas').offset().top + vel[player][1];
+      var left = $tile[0].offsetLeft + vel[player][0];
+      var top = $tile[0].offsetTop + vel[player][1];
 
       // Bounce off the edges of the screen
       if (left < 0) {
         left = 0;
         vel[player][0] = Math.abs(vel[player][0]);
-      } else if (left > $(document).width() - $tile.width()) {
-        left = $(document).width() - $tile.width();
+      } else if (left > $game.width() - $tile.width()) {
+        left = $game.width() - $tile.width();
         vel[player][0] = -1 * Math.abs(vel[player][0]);
       }
 
       if (top < 0) {
         top = 0;
         vel[player][1] = Math.abs(vel[player][1]);
-      } else if (top > $(document).height() - $tile.height()) {
-        top = $(document).height() - $tile.height();
+      } else if (top > $game.height() - $tile.height()) {
+        top =  $game.height() - $tile.height();
         vel[player][1] = -1 * Math.abs(vel[player][1]);
       }
 
@@ -106,15 +113,16 @@ function Controls() {
     loadKeyBindings();
 
     // Initialize velocities to zero
+    $game = $('#tiles');
     $('#tiles canvas').each(function(i, eli) {
       vel[i] = [0, 0];
       $(eli).css({
-        top: Math.random() * (jQuery(document).height() - $(eli).height()),
-        left: Math.random() * (jQuery(document).width() - $(eli).width())
+        top: Math.random() * ($game.height() - $(eli).height()),
+        left: Math.random() * ($game.width() - $(eli).width())
       });
     });
 
-    // Add keybindings
+    // Add keybindings, we can use the same function since it can check type
     $(document).unbind('keydown').bind('keydown', onkey);
     $(document).unbind('keyup').bind('keyup', onkey);
 

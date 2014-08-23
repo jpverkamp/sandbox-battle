@@ -10,7 +10,22 @@
   <script src="/game.js"></script>
 
   <style>
-  canvas { border: 1px solid black; position: absolute; }
+  table {
+    display: inline-block;
+  }
+
+  #tiles {
+    position: absolute;
+    width: 600px;
+    height: 400px;
+    background: gray;
+    border: 1px solid black;
+  }
+
+  #tiles canvas {
+    position: absolute;
+    border: 1px solid black;
+  }
   </style>
 </head>
 
@@ -18,10 +33,19 @@
 
   <div id="controls">
     <table data-player="0">
+      <tr><td>Player 1 - Blue</td><td></td></tr>
       <tr><td>Up</td><td><input name="up" value="W"></input></td></tr>
       <tr><td>Left</td><td><input name="left" value="A"></input></td></tr>
       <tr><td>Right</td><td><input name="right" value="D"></input></td></tr>
       <tr><td>Down</td><td><input name="down" value="S"></input></td></tr>
+    </table>
+
+    <table data-player="1">
+      <tr><td>Player 2 - Red</td><td></td></tr>
+      <tr><td>Up</td><td><input name="up" value="I"></input></td></tr>
+      <tr><td>Left</td><td><input name="left" value="J"></input></td></tr>
+      <tr><td>Right</td><td><input name="right" value="L"></input></td></tr>
+      <tr><td>Down</td><td><input name="down" value="K"></input></td></tr>
     </table>
 
     <p><a href="javascript:run()">Run!</a></p>
