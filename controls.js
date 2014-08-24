@@ -100,6 +100,7 @@ function Controls() {
     // Run AIs
     $.each(ais, function(player, ai) {
       switch (ai['type']) {
+        // Randomly wiggle about, changing directions no slower than every second
         case 'wiggle':
           ai['nextWiggle'] = ai['nextWiggle'] || new Date().getTime() + 1000 * Math.random();
           ai['xAccel'] = ai['xAccel'] || 0;
@@ -114,6 +115,63 @@ function Controls() {
 
           vel[player][0] += ai['xAccel'];
           vel[player][1] += ai['yAccel'];
+
+          break;
+
+        case 'chicken': // Run away from the nearest other tile
+        case 'shark':   // Run towards the nearest other tile
+          $me = $('#tiles *[data-player="' + player + '"]');
+          var myCenterX = $me.offset().left + $me.width() / 2;
+          var myCenterY = $me.offset().top + $me.height() / 2;
+
+          // Find the closest target
+          var otherCenterX, otherCenterY, distance;
+          var minimumDistance = +Infinity, $target;
+          $('#tiles *[data-player]').each(function(otherPlayer, other) {
+            $other = $(other);
+
+            var otherCenterX = $other.offset().left + $other.width() / 2;
+            var otherCenterY = $other.offset().top + $other.height() / 2;
+
+            distance = (
+              (myCenterX - otherCenterX) * (myCenterX - otherCenterX) +
+              (myCenterY - otherCenterY) * (myCenterY - otherCenterY)
+            );
+
+            if (distance > 0 && distance < minimumDistance) {
+              minimumDistance = distance;
+              $target = $other;
+            }
+          });
+
+          console.log($target);
+
+          // Calculate the direction to that target
+          var targetCenterX = $target.offset().left + $target.width() / 2;
+          var targetCenterY = $target.offset().top + $target.height() / 2;
+
+          // Get the length and normalized direciton
+          var length = Math.sqrt(
+            (targetCenterX - myCenterX) * (targetCenterX - myCenterX) +
+            (targetCenterY - myCenterY) * (targetCenterY - myCenterY)
+          );
+
+          console.log(length);
+
+          var directionX = (targetCenterX - myCenterX) / length;
+          var directionY = (targetCenterY - myCenterY) / length;
+
+          // If we're the chicken, invert that and run away rather than towards
+          if (ai['type'] == 'chicken') {
+            directionX *= -1;
+            directionY *= -1;
+          }
+
+          console.log(player + ' is moving ' + directionX + ',' + directionY);
+
+          // Apply a force in that direction
+          vel[player][0] += directionX * PER_TICK_ACCELERATION;
+          vel[player][1] += directionY * PER_TICK_ACCELERATION;
 
           break;
       }
