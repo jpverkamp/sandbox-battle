@@ -10,6 +10,8 @@ var make2DArray = function(width, height, def) {
 };
 
 function Tile(frame) {
+  var SORT_PER_TICK = 100;
+
   var index = parseInt($(frame).attr('data-player'));
   this.frame = frame;
 
@@ -22,7 +24,8 @@ function Tile(frame) {
 
   var imageData = frame_ctx.createImageData(frame.width, frame.height);
 
-  // Initialize
+  var scoringY = 0;
+  this.scores = {};
 
   // Drop sand within this tile
   this.drop = function() {
@@ -130,6 +133,29 @@ function Tile(frame) {
     });
   };
 
+  // Reorder a tile so that the pieces are sorted for scoring
+  this.score = function() {
+    if (scoringY > frame.height) return false;
+
+    var i = 0;
+    for (var x = 0; x < frame.width; x++) {
+      i = this.data[x][scoringY];
+      if (i > 0) {
+        if (!(i in this.scores)) this.scores[i] = 0;
+        this.scores[i] += 1;
+        this.data[x][scoringY] = 0;
+      }
+    }
+
+    scoringY += 1;
+    return true;
+  };
+
+  this.resetScoring = function() {
+    scoringY = 0;
+    this.scores = {};
+  };
+
   // Render this tile
   this.render = function() {
     // Render to the image data
@@ -164,6 +190,32 @@ function Tile(frame) {
 
     // Copy back to the GUI
     frame_ctx.putImageData(imageData, 0, 0);
+
+    // Draw scores
+    if (!($.isEmptyObject(this.scores))) {
+      var totalScore = 0, highestPlayer = 0;
+      frame_ctx.font = "12px monospaced";
+
+      $.each(this.scores, function(player, score) {
+        if (player == 1) {
+          frame_ctx.fillStyle = "blue"
+        } else if (player == 2) {
+          frame_ctx.fillStyle = "red"
+        } else if (player == 3) {
+          frame_ctx.fillStyle = "green"
+        } else if (player == 4) {
+          frame_ctx.fillStyle = "pink"
+        }
+
+        frame_ctx.fillText(score, 10, 10 + 12 * player);
+
+        totalScore += score;
+        highestPlayer = Math.max(highestPlayer, player);
+      });
+
+      frame_ctx.fillStyle = "white"
+      frame_ctx.fillText(totalScore, 10, 10 + 12 * (highestPlayer + 1));
+    }
   };
 }
 
@@ -180,23 +232,30 @@ function Tiles() {
     });
   };
 
-  this.tick = function() {
-    if (!running) return;
+  this.tick = function(scoring) {
+    var stillScoring = false;
 
-    $.each(tiles, function(_, tile) { tile.drop(); });
-    $.each(tiles, function(_, tile) { tile.swap(tile, tiles); });
+    if (scoring) {
+
+      $.each(tiles, function(_, tile) { stillScoring = stillScoring || tile.score(); });
+
+    } else if (running) {
+
+      $.each(tiles, function(_, tile) { tile.drop(); });
+      $.each(tiles, function(_, tile) { tile.swap(tile, tiles); });
+      $.each(tiles, function(_, tile) { tile.render(); });
+
+    }
+
     $.each(tiles, function(_, tile) { tile.render(); });
 
-    /*
-    $.each(tiles, function(_, tile) {
-      tile.drop();
-      tile.swap(tile, tiles);
-      tile.render();
-    });
-    */
+    return stillScoring;
   };
 
   this.stop = function() {
     running = false;
+    scoring = true;
+
+    $.each(tiles, function(_, tile) { tile.resetScoring(); });
   };
 }

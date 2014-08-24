@@ -151,6 +151,12 @@ function Controls() {
   this.stop = function() {
     running = false;
 
+    $.each(vel, function(player, vel) {
+      $game = $('#tiles');
+      $tile = $('#tiles *[data-player="' + player + '"]');
+      $tile.css({'top': 10, 'left': 10 + player * 110});
+    });
+
     $(document).unbind('keydown');
     $(document).unbind('keyup');
   }
