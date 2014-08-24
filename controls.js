@@ -144,8 +144,6 @@ function Controls() {
             }
           });
 
-          console.log($target);
-
           // Calculate the direction to that target
           var targetCenterX = $target.offset().left + $target.width() / 2;
           var targetCenterY = $target.offset().top + $target.height() / 2;
@@ -156,22 +154,20 @@ function Controls() {
             (targetCenterY - myCenterY) * (targetCenterY - myCenterY)
           );
 
-          console.log(length);
-
           var directionX = (targetCenterX - myCenterX) / length;
           var directionY = (targetCenterY - myCenterY) / length;
 
           // If we're the chicken, invert that and run away rather than towards
-          if (ai['type'] == 'chicken') {
+          // Sharks also move away, once they've come in for the kill
+          if (ai['type'] == 'chicken' || distance < 25) {
             directionX *= -1;
             directionY *= -1;
           }
 
-          console.log(player + ' is moving ' + directionX + ',' + directionY);
-
           // Apply a force in that direction
-          vel[player][0] += directionX * PER_TICK_ACCELERATION;
-          vel[player][1] += directionY * PER_TICK_ACCELERATION;
+          // Sharks and chickens accelerate more slowly or they'll stay right on the player
+          vel[player][0] += directionX * PER_TICK_ACCELERATION * (Math.random() / 2 + 0.5);
+          vel[player][1] += directionY * PER_TICK_ACCELERATION * (Math.random() / 2 + 0.5);
 
           break;
       }
