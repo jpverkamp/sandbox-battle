@@ -45,7 +45,7 @@ function tick() {
 
       winner = tiles.getWinner();
       $('#countdown')
-        .css('top', '120px')
+        .css('top', '112px')
         .css('left', '10px')
         .css('bottom', '')
         .css('right', '')
@@ -71,8 +71,8 @@ function run() {
     .hide()
     .fadeIn();
 
-  tiles.init();
   controls.init();
+  tiles.init();
 
   frames = 0;
   startTime = new Date().getTime();
@@ -85,8 +85,8 @@ function run() {
 }
 
 function stop() {
-  tiles.stop();
   controls.stop();
+  tiles.stop();
 
   $('canvas')
     .hide()
@@ -98,7 +98,7 @@ function stop() {
   $('#countdown')
     .hide()
     .fadeIn()
-    .css('top', '120px')
+    .css('top', '112px')
     .css('left', '10px')
     .css('bottom', '')
     .css('right', '')

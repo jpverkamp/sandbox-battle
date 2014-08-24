@@ -17,13 +17,13 @@
     color: white;
   }
 
-  input {
+  input, select, option {
     color: black;
   }
 
   #controls {
     position: absolute;
-    top: 150px;
+    top: 125px;
     margin: 0 auto;
     width: 600px;
     height: 400px;
@@ -48,6 +48,10 @@
 
   #controls table td:first-child {
     text-align: right;
+  }
+
+  #controls table select {
+    display: block;
   }
 
   #controls table input {
@@ -98,7 +102,14 @@
     <br />
 
     <table data-player="0">
-      <tr><td colspan="2">Player 1 - Blue</tr>
+      <tr><td colspan="2">Player 1 - Blue</td></tr>
+      <tr><td colspan="2">
+        <select name="type">
+          <option value="human" selected="selected">Human</option>
+          <option value="disabled">Disabled</option>
+          <option value="ai-wiggle">Wiggle</option>
+        </select>
+      </td></tr>
       <tr><td>Up</td><td><input name="up" value="W"></input></td></tr>
       <tr><td>Left</td><td><input name="left" value="A"></input></td></tr>
       <tr><td>Right</td><td><input name="right" value="D"></input></td></tr>
@@ -106,7 +117,14 @@
     </table>
 
     <table data-player="1">
-      <tr><td colspan="2">Player 2 - Red</tr>
+      <tr><td colspan="2">Player 2 - Red</td></tr>
+      <tr><td colspan="2">
+        <select name="type">
+          <option value="human" selected="selected">Human</option>
+          <option value="disabled">Disabled</option>
+          <option value="ai-wiggle">Wiggle</option>
+        </select>
+      </td></tr>
       <tr><td>Up</td><td><input name="up" value="I"></input></td></tr>
       <tr><td>Left</td><td><input name="left" value="J"></input></td></tr>
       <tr><td>Right</td><td><input name="right" value="L"></input></td></tr>
@@ -114,7 +132,14 @@
     </table>
 
     <table data-player="2">
-      <tr><td colspan="2">Player 3 - Green</tr>
+      <tr><td colspan="2">Player 3 - Green</td></tr>
+      <tr><td colspan="2">
+        <select name="type">
+          <option value="human" selected="selected">Human</option>
+          <option value="disabled">Disabled</option>
+          <option value="ai-wiggle">Wiggle</option>
+        </select>
+      </td></tr>
       <tr><td>Up</td><td><input name="up" value="UP"></input></td></tr>
       <tr><td>Left</td><td><input name="left" value="LEFT"></input></td></tr>
       <tr><td>Right</td><td><input name="right" value="RIGHT"></input></td></tr>
@@ -122,7 +147,14 @@
     </table>
 
     <table data-player="3">
-      <tr><td colspan="2">Player 4 - Pink</tr>
+      <tr><td colspan="2">Player 4 - Pink</td></tr>
+      <tr><td colspan="2">
+        <select name="type">
+          <option value="human" selected="selected">Human</option>
+          <option value="disabled">Disabled</option>
+          <option value="ai-wiggle">Wiggle</option>
+        </select>
+      </td></tr>
       <tr><td>Up</td><td><input name="up" value="NUM8"></input></td></tr>
       <tr><td>Left</td><td><input name="left" value="NUM4"></input></td></tr>
       <tr><td>Right</td><td><input name="right" value="NUM6"></input></td></tr>

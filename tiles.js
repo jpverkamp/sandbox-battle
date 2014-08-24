@@ -204,7 +204,7 @@ function Tile(frame) {
         } else if (player == 3) {
           frame_ctx.fillStyle = "green"
         } else if (player == 4) {
-          frame_ctx.fillStyle = "pink"
+          frame_ctx.fillStyle = "hotPink"
         }
 
         frame_ctx.fillText(score, 10, 10 + 12 * player);
@@ -228,7 +228,11 @@ function Tiles() {
 
     tiles = [];
     $('canvas[data-player]').each(function(_, frame) {
-      tiles.push(new Tile(frame));
+      if ($(frame).attr('data-disabled') == "true") {
+        // Don't simulate this one this time
+      } else {
+        tiles.push(new Tile(frame));
+      }
     });
   };
 
@@ -261,7 +265,6 @@ function Tiles() {
 
   this.getWinner = function() {
     var maxScore = -1, winner = -1, score = -1;
-
 
     $.each(tiles, function(player, tile) {
       score = 0;

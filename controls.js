@@ -23,6 +23,27 @@ function Controls() {
     });
   };
 
+  // Load the player types
+  var loadPlayerTypes = function() {
+    $('#controls table').each(function(i, eli) {
+      var player = parseInt($(eli).attr('data-player'));
+      var type = $(eli).find('select[name="type"]').val();
+
+      if (type == 'disabled') {
+        $('canvas[data-player="' + player + '"]')
+          .attr('data-disabled', 'true')
+          .hide()
+          .css('left', '-1000px');
+      } else {
+        $('canvas[data-player="' + player + '"]')
+          .attr('data-disabled', 'false');
+      }
+
+      console.log(player + ' is a ' + type);
+
+    });
+  };
+
   var onkey = function(event) {
     switch (event.keyCode) {
       case  37: key = 'LEFT'; break;
@@ -141,6 +162,9 @@ function Controls() {
     // Reload keybindings in case they've changed
     loadKeyBindings();
 
+    // Reload player types in case those have changed
+    loadPlayerTypes();
+
     // Add keybindings, we can use the same function since it can check type
     $(document).unbind('keydown').bind('keydown', onkey);
     $(document).unbind('keyup').bind('keyup', onkey);
@@ -155,6 +179,12 @@ function Controls() {
       $game = $('#tiles');
       $tile = $('#tiles *[data-player="' + player + '"]');
       $tile.css({'top': 10, 'left': 10 + player * 110});
+
+      if ($tile.attr('data-disabled') == 'true') {
+        $tile
+          .hide()
+          .css('left', '-1000px');
+      }
     });
 
     $(document).unbind('keydown');
