@@ -159,5 +159,5 @@ function Controls() {
 
     $(document).unbind('keydown');
     $(document).unbind('keyup');
-  }
+  };
 };

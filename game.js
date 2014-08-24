@@ -2,7 +2,7 @@ var tiles = new Tiles();
 var controls = new Controls();
 
 var frames = 0;
-var MS_PER_GAME = 60 * 1000;
+var MS_PER_GAME = 5 * 1000;
 var startTime = new Date().getTime();
 
 var running = false;
@@ -10,6 +10,7 @@ var scoring = false;
 
 $(function() {
   controls.init();
+  $('table[data-player]').hide();
 });
 
 function tick() {
@@ -20,7 +21,13 @@ function tick() {
 
   if (running && remainingSec > 0) {
 
-    $('#countdown').text(remainingSec + ' sec remaining');
+    $('#countdown')
+      .css('top', '')
+      .css('left', '')
+      .css('bottom', '10px')
+      .css('right', '10px')
+      .text(remainingSec + ' sec remaining');
+
     $('#debug').text(
       frames + ' frames in ' +
       soFar + ' seconds, ' +
@@ -33,6 +40,17 @@ function tick() {
   } else if (scoring) {
 
     scoring = tiles.tick(scoring);
+    if (!scoring) {
+      $('a[data-button]').fadeIn();
+
+      winner = tiles.getWinner();
+      $('#countdown')
+        .css('top', '120px')
+        .css('left', '10px')
+        .css('bottom', '')
+        .css('right', '')
+        .text('game over, player ' + (winner + 1) + ' wins!');
+    }
 
   } else {
 
@@ -46,6 +64,13 @@ function tick() {
 }
 
 function run() {
+  $('a[data-button]').fadeOut();
+  $('table[data-player]').fadeOut();
+
+  $('canvas')
+    .hide()
+    .fadeIn();
+
   tiles.init();
   controls.init();
 
@@ -63,10 +88,29 @@ function stop() {
   tiles.stop();
   controls.stop();
 
+  $('canvas')
+    .hide()
+    .fadeIn();
+
   startTime = new Date().getTime() - MS_PER_GAME;
   running = false;
   scoring = true;
-  $('#countdown').text('game over');
+  $('#countdown')
+    .hide()
+    .fadeIn()
+    .css('top', '120px')
+    .css('left', '10px')
+    .css('bottom', '')
+    .css('right', '')
+    .text('game over');
 
   return false;
 }
+
+$(function() {
+  $('[data-button="run"]').click(run);
+  $('[data-button="options"]').click(function() {
+    $('[data-button="options"]');
+    $('table[data-player]').fadeToggle();
+  });
+});

@@ -258,4 +258,23 @@ function Tiles() {
 
     $.each(tiles, function(_, tile) { tile.resetScoring(); });
   };
+
+  this.getWinner = function() {
+    var maxScore = -1, winner = -1, score = -1;
+
+
+    $.each(tiles, function(player, tile) {
+      score = 0;
+      $.each(tile.scores, function(_, points) {
+        score += points;
+      });
+
+      if (score > maxScore) {
+        maxScore = score;
+        winner = player;
+      }
+    });
+
+    return winner;
+  };
 }

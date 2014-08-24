@@ -5,22 +5,45 @@
   <script src="//ajax.googleapis.com/ajax/libs/jquery/1.11.0/jquery.min.js"></script>
 	<script src="//code.jquery.com/ui/1.11.1/jquery-ui.min.js"></script>
 
+  <link rel="stylesheet" href="//maxcdn.bootstrapcdn.com/bootstrap/3.2.0/css/bootstrap.min.css" />
+  <script src="//maxcdn.bootstrapcdn.com/bootstrap/3.2.0/js/bootstrap.min.js"></script>
+
   <script src="/tiles.js"></script>
   <script src="/controls.js"></script>
   <script src="/game.js"></script>
 
   <style>
+  * {
+    color: white;
+  }
+
+  input {
+    color: black;
+  }
+
+  #controls {
+    position: absolute;
+    top: 150px;
+    margin: 0 auto;
+    width: 600px;
+    height: 400px;
+  }
+
+  #controls a {
+    display: inline-block;
+    margin: 0.5em;
+  }
+
   #controls table {
     border: 1px solid black;
     display: inline-block;
-    margin: 1em;
+    margin: 0.5em;
     padding: 0.5em;
     border-radius: 0.5em;
-
   }
 
   #controls table td {
-    padding: 0.1em;
+    padding: 0.25em !important;
   }
 
   #controls table td:first-child {
@@ -33,11 +56,12 @@
   }
 
   #tiles {
-    position: relative;
+    position: absolute;
     width: 600px;
     height: 400px;
+    margin: 0 auto;
     background: black;
-    border: 1px solid black;
+    color: white;
   }
 
   #tiles canvas {
@@ -50,15 +74,29 @@
   #tiles canvas[data-player="2"] { border: 1px solid green; }
   #tiles canvas[data-player="3"] { border: 1px solid hotPink; }
 
-  #tiles {
-    color: white;
+  #tiles #countdown {
+    position: absolute;
+    right: 10px;
+    bottom: 10px;
   }
   </style>
 </head>
 
 <body>
+  <div id="tiles">
+    <canvas data-player="0" width="100" height="100"></canvas>
+    <canvas data-player="1" width="100" height="100"></canvas>
+    <canvas data-player="2" width="100" height="100"></canvas>
+    <canvas data-player="3" width="100" height="100"></canvas>
 
-  <div class="table" id="controls">
+    <p id="countdown"></p>
+  </div>
+
+  <div id="controls">
+    <a data-button="run" class="btn btn-default btn-lg navbar-btn" href="#">Play!</a>
+    <a data-button="options" class="btn btn-default btn-lg navbar-btn" href="#">Options</a>
+    <br />
+
     <table data-player="0">
       <tr><td colspan="2">Player 1 - Blue</tr>
       <tr><td>Up</td><td><input name="up" value="W"></input></td></tr>
@@ -92,19 +130,6 @@
     </table>
   </div>
 
-  <div>
-    [ <a href="javascript:run()">Run!</a> ]
-    [ <a href="javascript:stop()">Stop!</a> ]
-  </div>
-
-  <div id="tiles">
-    <canvas data-player="0" width="100" height="100"></canvas>
-    <canvas data-player="1" width="100" height="100"></canvas>
-    <canvas data-player="2" width="100" height="100"></canvas>
-    <canvas data-player="3" width="100" height="100"></canvas>
-  </div>
-
-  <p id="countdown"></p>
   <p id="debug"></p>
 </body>
 </html>
