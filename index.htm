@@ -3,7 +3,6 @@
   <title>Sandbox Battle!</title>
 
   <script src="//ajax.googleapis.com/ajax/libs/jquery/1.11.0/jquery.min.js"></script>
-	<script src="//code.jquery.com/ui/1.11.1/jquery-ui.min.js"></script>
 
   <link rel="stylesheet" href="//maxcdn.bootstrapcdn.com/bootstrap/3.2.0/css/bootstrap.min.css" />
   <script src="//maxcdn.bootstrapcdn.com/bootstrap/3.2.0/js/bootstrap.min.js"></script>
@@ -23,15 +22,17 @@
 
   #controls {
     position: absolute;
-    top: 125px;
-    margin: 0 auto;
+    top: 1em;
+    left: 50%;
+    margin-left: -300px;
     width: 600px;
-    height: 400px;
+    height: 400px;d
   }
 
   #controls a {
     display: inline-block;
     margin: 0.5em;
+    margin-top: 125px;
   }
 
   #controls table {
@@ -63,9 +64,12 @@
     position: absolute;
     width: 600px;
     height: 400px;
-    margin: 0 auto;
+    top: 1em;
+    left: 50%;
+    margin-left: -300px;
     background: black;
     color: white;
+    border: 3px groove white;
   }
 
   #tiles canvas {
@@ -79,6 +83,18 @@
     bottom: 10px;
   }
 
+  #instructions {
+    position: absolute;
+    color: black;
+    top: 425px;
+    left: 50%;
+    width: 400px;
+    margin-left: -200px
+  }
+
+  #instructions *:not(a) {
+    color: black;
+  }
   </style>
 </head>
 
@@ -164,6 +180,26 @@
       <tr><td>Right</td><td><input name="right" value="NUM6"></input></td></tr>
       <tr><td>Down</td><td><input name="down" value="NUM5"></input></td></tr>
     </table>
+  </div>
+
+  <div id="instructions">
+    <h1>Sandbox Battle</h1>
+
+    <h2>Created for <a href="http://www.ludumdare.com/compo/ludum-dare-30/">Ludum Dare 30</a></h2>
+
+    <h3>Instructions</h3>
+    <ul>
+      <li>You have 60 seconds to collect as much sand as you can</li>
+      <li>Each player's sand falls to the bottom of their tile</li>
+      <li>Colliding with other players will steal their sand</li>
+      <li>Choose options for keyboard controls and to enable multiplayer</li>
+    </ul>
+
+    <h3>Comments</h3>
+    <ul>
+      <li>Libraries used: <a href="https://jquery.com/">jQuery</a>, <a href="http://getbootstrap.com/">Boostrap</a></li>
+      <li>Graphics generated in Photoshop CS6</li>
+    </ul>
   </div>
 
   <p id="debug"></p>
