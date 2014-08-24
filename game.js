@@ -5,6 +5,7 @@ var frames = 0;
 var MS_PER_GAME = 60 * 1000;
 var startTime = new Date().getTime();
 
+var demoRunning = false;
 var running = false;
 var scoring = false;
 
@@ -52,13 +53,18 @@ function tick() {
         .text('game over, player ' + (winner + 1) + ' wins!');
     }
 
+  } else if (demoRunning) {
+
+    tiles.tick(scoring);
+    controls.tick();
+
   } else {
 
     stop();
 
   }
 
-  if (running || scoring) {
+  if (demoRunning || running || scoring) {
     setTimeout(tick, 1000/60);
   }
 }
@@ -70,6 +76,12 @@ function run() {
   $('canvas')
     .hide()
     .fadeIn();
+
+  if (demoRunning) {
+    controls.stop();
+    tiles.stop();
+    demoRunning = false;
+  }
 
   controls.init();
   tiles.init();
@@ -113,4 +125,9 @@ $(function() {
     $('[data-button="options"]');
     $('table[data-player]').fadeToggle();
   });
+
+  demoRunning = true;
+  controls.init();
+  tiles.init();
+  tick();
 });
