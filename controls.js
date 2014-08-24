@@ -1,5 +1,7 @@
 function Controls() {
   var keys = {};
+  var ais = {};
+
   var running = false;
   var PER_TICK_ACCELERATION = 0.25; // pixels/tick^2
   var PER_TICK_FRICTION = 0.001;    // pixels/tick^2
@@ -39,8 +41,9 @@ function Controls() {
           .attr('data-disabled', 'false');
       }
 
-      console.log(player + ' is a ' + type);
-
+      if (type.substring(0, 2) == "ai") {
+        ais[player] = {'type': type.substring(3)};
+      }
     });
   };
 
@@ -81,7 +84,7 @@ function Controls() {
       if (player >= vel.length) return;
 
       // Update velocity
-      if (active) {
+      if (active && !(player in ais)) {
         if (command == 'up') {
           vel[player][1] -= PER_TICK_ACCELERATION;
         } else if (command == 'down') {
@@ -91,6 +94,28 @@ function Controls() {
         } else if (command == 'right') {
           vel[player][0] += PER_TICK_ACCELERATION;
         }
+      }
+    });
+
+    // Run AIs
+    $.each(ais, function(player, ai) {
+      switch (ai['type']) {
+        case 'wiggle':
+          ai['nextWiggle'] = ai['nextWiggle'] || new Date().getTime() + 1000 * Math.random();
+          ai['xAccel'] = ai['xAccel'] || 0;
+          ai['yAccel'] = ai['yAccel'] || 0;
+
+          if (new Date().getTime() > ai['nextWiggle']) {
+            ai['xAccel'] = (Math.floor(Math.random() * 3) - 1) * PER_TICK_ACCELERATION;
+            ai['yAccel'] = (Math.floor(Math.random() * 3) - 1) * PER_TICK_ACCELERATION;
+
+            ai['nextWiggle'] = new Date().getTime() + 1000 * Math.random();
+          }
+
+          vel[player][0] += ai['xAccel'];
+          vel[player][1] += ai['yAccel'];
+
+          break;
       }
     });
 

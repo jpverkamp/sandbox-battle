@@ -45,8 +45,8 @@ function tick() {
 
       winner = tiles.getWinner();
       $('#countdown')
-        .css('top', '112px')
-        .css('left', '10px')
+        .css('top', '130px')
+        .css('left', '220px')
         .css('bottom', '')
         .css('right', '')
         .text('game over, player ' + (winner + 1) + ' wins!');
@@ -98,8 +98,8 @@ function stop() {
   $('#countdown')
     .hide()
     .fadeIn()
-    .css('top', '112px')
-    .css('left', '10px')
+    .css('top', '130px')
+    .css('left', '220px')
     .css('bottom', '')
     .css('right', '')
     .text('game over');
