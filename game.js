@@ -2,12 +2,13 @@ var tiles = new Tiles();
 var controls = new Controls();
 
 var frames = 0;
-var MS_PER_GAME = 60 * 1000;
+var MS_PER_GAME = 5 * 1000;
 var startTime = new Date().getTime();
 
 var demoRunning = false;
 var running = false;
 var scoring = false;
+var dontStop = false;
 
 $(function() {
   controls.init();
@@ -51,6 +52,8 @@ function tick() {
         .css('bottom', '')
         .css('right', '')
         .text('game over, player ' + (winner + 1) + ' wins!');
+
+      dontStop = true;
     }
 
   } else if (demoRunning) {
@@ -60,7 +63,9 @@ function tick() {
 
   } else {
 
-    stop();
+    if (!dontStop) {
+      stop();
+    }
 
   }
 
@@ -72,6 +77,7 @@ function tick() {
 function run() {
   $('a[data-button]').fadeOut();
   $('table[data-player]').fadeOut();
+  $('#title').fadeOut();
 
   $('canvas')
     .hide()
@@ -90,6 +96,7 @@ function run() {
   startTime = new Date().getTime();
   running = true;
   scoring = false;
+  dontStop = false;
 
   tick();
 
@@ -103,6 +110,8 @@ function stop() {
   $('canvas')
     .hide()
     .fadeIn();
+
+  $('#title').fadeIn();
 
   startTime = new Date().getTime() - MS_PER_GAME;
   running = false;
@@ -124,6 +133,7 @@ $(function() {
   $('[data-button="options"]').click(function() {
     $('[data-button="options"]');
     $('table[data-player]').fadeToggle();
+    $('#title').fadeToggle();
   });
 
   demoRunning = true;
