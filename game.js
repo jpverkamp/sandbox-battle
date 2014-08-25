@@ -2,7 +2,7 @@ var tiles = new Tiles();
 var controls = new Controls();
 
 var frames = 0;
-var MS_PER_GAME = 5 * 1000;
+var MS_PER_GAME = 60 * 1000;
 var startTime = new Date().getTime();
 
 var demoRunning = false;
