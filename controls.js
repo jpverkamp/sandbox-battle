@@ -27,6 +27,8 @@ function Controls() {
 
   // Load the player types
   var loadPlayerTypes = function() {
+    ais = {};
+
     $('#controls table').each(function(i, eli) {
       var player = parseInt($(eli).attr('data-player'));
       var type = $(eli).find('select[name="type"]').val();

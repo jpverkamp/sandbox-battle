@@ -130,4 +130,9 @@ $(function() {
   controls.init();
   tiles.init();
   tick();
+
+  $('table[data-player="0"] select[name="type"]').val('human');
+  $('table[data-player="1"] select[name="type"]').val('ai-wiggle');
+  $('table[data-player="2"] select[name="type"]').val('ai-wiggle');
+  $('table[data-player="3"] select[name="type"]').val('ai-wiggle');
 });
